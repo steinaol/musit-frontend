@@ -6,12 +6,13 @@ import React from 'react';
 import { Observable } from 'rxjs';
 import { emitError, emitSuccess } from '../../shared/errors';
 import { toPromise } from '../../shared/util';
+import { addEmptyPerson$, editPersons$, removePerson$ } from './personRoleDateStore';
 
 const { form$, updateForm$, loadForm$ } = sampleForm;
 
 const data = {
   appSession$: { type: React.PropTypes.instanceOf(Observable).isRequired },
-  form$
+  form$,
 };
 
 const props = {
@@ -20,6 +21,6 @@ const props = {
   emitError
 };
 
-const commands = { updateForm$, loadForm$ };
+const commands = { updateForm$, loadForm$, addEmptyPerson$, editPersons$, removePerson$ };
 
 export default inject(data, commands, props)(SampleFormAddComponent);

@@ -38,7 +38,11 @@ const reducer$ = actions =>
   );
 
 export const personRoleDateStore$ = (
-  actions = { addEmptyPerson$, editPersons$, removePerson$ }
-) => createStore('personRoleDateStore$', reducer$(actions), Observable.of(initialState));
+  actions$: {
+    addEmptyPerson$: Observable,
+    editPersons$: Observable,
+    removePerson$: Observable
+  } = { addEmptyPerson$, editPersons$, removePerson$ }
+) => createStore('personRoleDateStore$', reducer$(actions$), Observable.of(initialState));
 
 export default personRoleDateStore$();

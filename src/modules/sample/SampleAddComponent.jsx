@@ -43,7 +43,7 @@ type Props = {
   addPersonToSample: Function,
   updatePersonForSample: Function,
   clearForm: Function,
-  personRoleDataStore: {
+  personRoleDateStore: {
     persons: Persons
   },
   appSession: {
@@ -207,7 +207,7 @@ const SampleAddComponent = ({form, editPersons, addEmptyPerson, removePerson,
     }
   };
 
-  const personRoles = personRoleDateStore.persons;
+  const personRoles: Persons = personRoleDateStore.persons;
   console.log('PersonRoles', personRoles);
 
   return (

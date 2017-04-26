@@ -8,15 +8,21 @@ import { emitError, emitSuccess } from '../../shared/errors';
 import { toPromise } from '../../shared/util';
 import Sample from '../../models/sample';
 import flowRight from 'lodash/flowRight';
+import personRoleDateStore$, {
+  addEmptyPerson$,
+  editPersons$,
+  removePerson$
+} from './personRoleDateStore';
 
 const { form$, loadForm$, updateForm$ } = sampleForm;
 
 const data = {
   appSession$: { type: React.PropTypes.instanceOf(Observable).isRequired },
-  form$
+  form$,
+  personRoleDateStore$
 };
 
-const commands = { loadForm$, updateForm$ };
+const commands = { loadForm$, updateForm$, editPersons$, removePerson$, addEmptyPerson$ };
 
 const props = {
   loadSample: toPromise(Sample.loadSample()),

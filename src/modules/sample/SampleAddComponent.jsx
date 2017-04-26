@@ -18,7 +18,7 @@ import AppSession from '../app/appSession';
 import Config from '../../config';
 import {hashHistory} from 'react-router';
 import PersonRoleDate from '../../components/samples/personRoleDate';
-import type {Person} from './sampleForm';
+import type {Person, Persons} from './personRoleDateStore';
 type Field = { name: string, rawValue?: any }; // TODO use Field type in forms package, and change that Field type instead
 type Update = (update: Field) => void;
 
@@ -35,12 +35,17 @@ type FormData = {
 type Props = {
   form: FormData,
   updateForm: Update,
-  persons: Array<{ name: string, role: string, date: string }>,
+  persons: Persons,
   addSample: Function,
+  editPersons: Function,
+  addEmptyPerson: Function,
+  removePerson: Function,
   addPersonToSample: Function,
   updatePersonForSample: Function,
   clearForm: Function,
-
+  personRoleDataStore: {
+    persons: Persons
+  },
   appSession: {
     museumId: number,
     accessToken: string,
@@ -124,7 +129,7 @@ const FieldReadOnly = ({field, label, defaultValue, inputProps}: FieldReadOnlyPr
   );
 };
 
-const submitSample = (appSession: AppSession, form: FormData, addSample: Function) => {
+const submitSample = (appSession: AppSession, form: FormData, addSample: Function, persons: Persons) => {
   const token = appSession.accessToken;
   const museumId = appSession.museumId;
   const myReduce = (frm: FormData) => Object.keys(frm).reduce((akk: any, key: string) => ({...akk, [key]: frm[key].value}), {});
@@ -143,7 +148,6 @@ const submitSample = (appSession: AppSession, form: FormData, addSample: Functio
     }
   }, {});
 
-  const persons= form.persons.rawValue;
   const tmpData = {...myReduce(form), ...reducePersons(persons)};
   const data = {
     ...tmpData,
@@ -165,7 +169,8 @@ const submitSample = (appSession: AppSession, form: FormData, addSample: Functio
 };
 
 
-const SampleAddComponent = ({form, updateForm, addSample, appSession, clearForm}: Props) => {
+const SampleAddComponent = ({form, editPersons, addEmptyPerson, removePerson,
+                              updateForm, addSample, appSession, clearForm, personRoleDateStore}: Props) => {
 
   const sampleValues = [
     'Frø',
@@ -202,7 +207,8 @@ const SampleAddComponent = ({form, updateForm, addSample, appSession, clearForm}
     }
   };
 
-  const personRoles = form.persons.rawValue || [];
+  const personRoles = personRoleDateStore.persons;
+  console.log('PersonRoles', personRoles);
 
   return (
     <Form style={{padding: 20}}>
@@ -247,21 +253,9 @@ const SampleAddComponent = ({form, updateForm, addSample, appSession, clearForm}
       <PersonRoleDate
         heading={'Personer knyttet til prøveuttaket'}
         personData={personRoles}
-        addPerson={() => updateForm({
-          name: form.persons.name,
-          rawValue: [...personRoles, {name: '', role: '', date: ''}]
-        })}
-        updatePerson={(ind, person) => updateForm({
-          name: form.persons.name,
-          rawValue: person ? [
-            ...personRoles.slice(0, ind),
-            person,
-            ...personRoles.slice(ind + 1)
-          ] : [
-            ...personRoles.slice(0, ind),
-            ...personRoles.slice(ind + 1)
-          ]
-        })}
+        addPerson={() => addEmptyPerson()}
+        updatePerson={(ind, person) => editPersons({ind, person})}
+        removePerson={ (ind) => removePerson(ind)}
       />
       <br/>
 
@@ -458,7 +452,7 @@ const SampleAddComponent = ({form, updateForm, addSample, appSession, clearForm}
         <Col md={4}>
           <Button
             onClick={() =>
-              submitSample(appSession, form, addSample)
+              submitSample(appSession, form, addSample, personRoles)
                 .then((value) => hashHistory.push(Config.magasin.urls.client.analysis.gotoSample(value)))
             }
           >

@@ -17,6 +17,7 @@ type Props = {
   personData: Array<Person>,
   updatePerson: Function,
   addPerson: Function,
+  removePerson: Function,
   heading: string
 };
 type FieldDropDownProps = {
@@ -51,7 +52,7 @@ const FieldDropDown = (
 );
 
 export const PersonRoleDate = (
-  { personData, updatePerson, addPerson, heading }: Props
+  { personData, updatePerson, removePerson, addPerson, heading }: Props
 ) => {
   const pArr = personData || [];
   return pArr &&
@@ -103,7 +104,7 @@ export const PersonRoleDate = (
               />}
           </Col>
           <Col md={1}>
-            <FontAwesome name={'times'} onClick={() => updatePerson(i)} />
+            <FontAwesome name={'times'} onClick={() => removePerson(i)} />
           </Col>
         </Row>
       ))}

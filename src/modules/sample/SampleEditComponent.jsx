@@ -38,6 +38,9 @@ type Props = {
   form: FormData,
   updateForm: Update,
   editSample: Function,
+  addEmptyPerson: Function,
+  editPersons: Function,
+  removePerson: Function,
   appSession: {
     museumId: number,
     accessToken: string,
@@ -173,7 +176,7 @@ const submitSample = (id:string, appSession: AppSession, form: FormData, editSam
 };
 
 
-const SampleEditComponent = ({params, form, updateForm, editSample, appSession}: Props) => {
+const SampleEditComponent = ({params, form, updateForm, editSample, appSession, addEmptyPerson, removePerson, editPersons}: Props) => {
   const id = params.sampleId;
 
   const sampleValues = [
@@ -256,21 +259,9 @@ const SampleEditComponent = ({params, form, updateForm, editSample, appSession}:
       <PersonRoleDate
         heading={'Personer knyttet til prøveuttaket'}
         personData={personRoles}
-        addPerson={() => updateForm({
-          name: form.persons.name,
-          rawValue: [...personRoles, {name: '', role: '', date: ''}]
-        })}
-        updatePerson={(ind, person) => updateForm({
-          name: form.persons.name,
-          rawValue: person ? [
-            ...personRoles.slice(0, ind),
-            person,
-            ...personRoles.slice(ind + 1)
-          ] : [
-            ...personRoles.slice(0, ind),
-            ...personRoles.slice(ind + 1)
-          ]
-        })}
+        addPerson={() => addEmptyPerson()}
+        updatePerson={(ind, person) => editPersons({ind, person})}
+        removePerson={ (ind) => removePerson(ind)}
       />
       <br/>
       <Well>
